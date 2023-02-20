@@ -1,61 +1,17 @@
+#include "parser.h"
+
 /**
+ * IPK Input Parser
  *
  * @file: parser.cpp
  * @date: 20.02.2023
  */
 
-#include "parser.h"
+IPK::AaaS::SyntaxException::SyntaxException(std::string message) { this->message = std::move(message); }
 
-IPK::AaaS::Parser::Parser(std::function<LexicalToken *()> &lexer_func) : lexer_func(lexer_func) {
-    current_token = lexer_func();
-}
+const char *IPK::AaaS::SyntaxException::what() const noexcept { return message.c_str(); }
 
-IPK::AaaS::Parser::~Parser() = default;
-
-void IPK::AaaS::Parser::expect_token(IPK::AaaS::TOKEN_TYPE type) {
-    if (current_token->get_type() != type) { throw std::runtime_error("Unexpected token"); }
-
-    current_token = lexer_func();
-}
-
-IPK::AaaS::SyntaxTree *IPK::AaaS::Parser::expr() {
-    bool isNumber = current_token->get_type() == TOKEN_TYPE::NUMBER;
-    bool isExpression = current_token->get_type() == TOKEN_TYPE::LEFT_PARENTHESIS;
-
-    if (!isNumber && !isExpression) throw std::runtime_error("Unexpected token");
-
-    if (isNumber) {
-        auto tree = new SyntaxTree(TOKEN_TYPE::NUMBER, current_token->get_value());
-        current_token = lexer_func();
-        return tree;
-    }
-
-    expect_token(TOKEN_TYPE::LEFT_PARENTHESIS);
-
-    if (!(current_token->get_type() & (TOKEN_TYPE::PLUS | TOKEN_TYPE::MINUS | TOKEN_TYPE::MULTIPLY | TOKEN_TYPE::DIVIDE))) {
-        throw std::runtime_error("Unexpected token. Expected operator");
-    }
-
-    TOKEN_TYPE operator_type = current_token->get_type();
-
-    current_token = lexer_func();
-
-    SyntaxTree *left = expr();
-    SyntaxTree *right = expr();
-
-    expect_token(TOKEN_TYPE::RIGHT_PARENTHESIS);
-
-    return new SyntaxTree(operator_type, "", left, right);
-}
-IPK::AaaS::SyntaxTree *IPK::AaaS::Parser::parse() {
-    SyntaxTree *tree = nullptr;
-    while (current_token->get_type() != TOKEN_TYPE::END_OF_FILE) tree = expr();
-
-    return tree;
-}
-
-IPK::AaaS::SyntaxTree::SyntaxTree(IPK::AaaS::TOKEN_TYPE type, std::string value)
-    : type(type), value(std::move(value)) {
+IPK::AaaS::SyntaxTree::SyntaxTree(IPK::AaaS::TOKEN_TYPE type, std::string value) : type(type), value(std::move(value)) {
     left = nullptr;
     right = nullptr;
 }
@@ -88,3 +44,81 @@ IPK::AaaS::TOKEN_TYPE IPK::AaaS::SyntaxTree::get_type() { return type; }
 IPK::AaaS::SyntaxTree *IPK::AaaS::SyntaxTree::get_left() { return left; }
 
 IPK::AaaS::SyntaxTree *IPK::AaaS::SyntaxTree::get_right() { return right; }
+
+IPK::AaaS::Parser::Parser(std::function<LexicalToken *()> &lexer_func) : lexer_func(lexer_func) {
+    current_token = lexer_func();
+}
+
+IPK::AaaS::Parser::~Parser() { delete current_token; }
+
+void IPK::AaaS::Parser::expect_token(IPK::AaaS::TOKEN_TYPE type) {
+    if (current_token->get_type() != type) { throw SyntaxException("Unexpected token."); }
+
+    current_token = lexer_func();
+}
+
+IPK::AaaS::SyntaxTree *IPK::AaaS::Parser::expr() {
+    bool isNumber = current_token->get_type() == TOKEN_TYPE::NUMBER;
+    bool isExpression = current_token->get_type() == TOKEN_TYPE::LEFT_PARENTHESIS;
+
+    if (!isNumber && !isExpression) throw SyntaxException("Unexpected token. Expected number or expression");
+
+    if (isNumber) {
+        auto tree = new SyntaxTree(TOKEN_TYPE::NUMBER, current_token->get_value());
+        current_token = lexer_func();
+        return tree;
+    }
+
+    expect_token(TOKEN_TYPE::LEFT_PARENTHESIS);
+
+    if (!IPK::AaaS::ParserUtils::is_operator(current_token->get_type())) {
+        throw SyntaxException("Unexpected token. Expected operator");
+    }
+
+    TOKEN_TYPE operator_type = current_token->get_type();
+
+    current_token = lexer_func();
+
+    SyntaxTree *left = expr();
+    SyntaxTree *right = expr();
+
+    expect_token(TOKEN_TYPE::RIGHT_PARENTHESIS);
+
+    return new SyntaxTree(operator_type, "", left, right);
+}
+
+IPK::AaaS::SyntaxTree *IPK::AaaS::Parser::build_tree() {
+    SyntaxTree *tree = nullptr;
+    while (current_token->get_type() != TOKEN_TYPE::END_OF_FILE) tree = expr();
+
+    return tree;
+}
+bool IPK::AaaS::ParserUtils::is_operator(IPK::AaaS::TOKEN_TYPE type) {
+    return type & (TOKEN_TYPE::PLUS | TOKEN_TYPE::MINUS | TOKEN_TYPE::MULTIPLY | TOKEN_TYPE::DIVIDE);
+}
+
+bool IPK::AaaS::ParserUtils::is_valid_input(const std::string &input) {
+    std::istream *stream = new std::istringstream(input);
+
+    return is_valid_input(*stream);
+}
+
+bool IPK::AaaS::ParserUtils::is_valid_input(std::istream &input) {
+    auto lexer = new Lexer(input);
+
+    std::function<IPK::AaaS::LexicalToken *()> parser_func = [lexer]() { return lexer->next_token(); };
+
+    auto parser = new Parser(parser_func);
+
+    try {
+        parser->build_tree();
+    } catch (IPK::AaaS::SyntaxException &e) {
+        delete lexer;
+        delete parser;
+        return false;
+    }
+
+    delete lexer;
+    delete parser;
+    return true;
+}

@@ -1,5 +1,4 @@
 #include <iostream>
-#include <sstream>
 #include "lexer.h"
 #include "parser.h"
 
@@ -12,7 +11,7 @@ int main() {
     std::function<IPK::AaaS::LexicalToken *()> parser_func = [lexer]() { return lexer->next_token(); };
 
     auto *parser = new IPK::AaaS::Parser(parser_func);
-    IPK::AaaS::SyntaxTree *tree = parser->parse();
+    IPK::AaaS::SyntaxTree *tree = parser->build_tree();
 
     std::function<void(IPK::AaaS::SyntaxTree *)> callback = [](IPK::AaaS::SyntaxTree *node) {
         if (node->get_type() & (IPK::AaaS::TOKEN_TYPE::PLUS | IPK::AaaS::TOKEN_TYPE::MINUS |

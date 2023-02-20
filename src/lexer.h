@@ -1,5 +1,5 @@
 /**
- *
+ * IPK Input Lexer
  * @file: lexer.h
  * @date: 20.02.2023
  */

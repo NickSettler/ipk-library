@@ -1,4 +1,5 @@
 /**
+ * IPK Input Parser
  *
  * @file: parser.h
  * @date: 20.02.2023
@@ -9,12 +10,24 @@
 
 #include "lexer.h"
 
+#include <sstream>
+
 namespace IPK::AaaS {
     typedef enum {
         PRE_ORDER,
         IN_ORDER,
         POST_ORDER,
     } TreeTraversalType;
+
+    class SyntaxException : public std::exception {
+    private:
+        std::string message;
+
+    public:
+        explicit SyntaxException(std::string message);
+
+        const char *what() const noexcept override;
+    };
 
     class SyntaxTree {
     private:
@@ -60,7 +73,16 @@ namespace IPK::AaaS {
 
         ~Parser();
 
-        SyntaxTree *parse();
+        SyntaxTree *build_tree();
+    };
+
+    class ParserUtils {
+    public:
+        static bool is_operator(TOKEN_TYPE type);
+
+        static bool is_valid_input(const std::string& input);
+
+        static bool is_valid_input(std::istream &input);
     };
 }// namespace IPK::AaaS
 
