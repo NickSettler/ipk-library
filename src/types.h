@@ -20,7 +20,7 @@ namespace IPK::AaaS {
         MINUS = 1 << 5,
         MULTIPLY = 1 << 6,
         DIVIDE = 1 << 7,
-    } LEXICAL_TOKEN_TYPE;
+    } TOKEN_TYPE;
 }// namespace IPK::AaaS
 
 #endif// IPKLIB_TYPES_H

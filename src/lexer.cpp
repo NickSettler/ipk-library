@@ -29,19 +29,19 @@ namespace IPK::AaaS {
                             break;
                         case EOF:
                         case '\0':
-                            return new LexicalToken("", LEXICAL_TOKEN_TYPE::END_OF_FILE);
+                            return new LexicalToken("", TOKEN_TYPE::END_OF_FILE);
                         case '(':
-                            return new LexicalToken("(", LEXICAL_TOKEN_TYPE::LEFT_PARENTHESIS);
+                            return new LexicalToken("(", TOKEN_TYPE::LEFT_PARENTHESIS);
                         case ')':
-                            return new LexicalToken(")", LEXICAL_TOKEN_TYPE::RIGHT_PARENTHESIS);
+                            return new LexicalToken(")", TOKEN_TYPE::RIGHT_PARENTHESIS);
                         case '+':
-                            return new LexicalToken("+", LEXICAL_TOKEN_TYPE::PLUS);
+                            return new LexicalToken("+", TOKEN_TYPE::PLUS);
                         case '-':
-                            return new LexicalToken("-", LEXICAL_TOKEN_TYPE::MINUS);
+                            return new LexicalToken("-", TOKEN_TYPE::MINUS);
                         case '*':
-                            return new LexicalToken("*", LEXICAL_TOKEN_TYPE::MULTIPLY);
+                            return new LexicalToken("*", TOKEN_TYPE::MULTIPLY);
                         case '/':
-                            return new LexicalToken("/", LEXICAL_TOKEN_TYPE::DIVIDE);
+                            return new LexicalToken("/", TOKEN_TYPE::DIVIDE);
                         default:
                             if (isdigit(current_char)) {
                                 token_string += current_char;
@@ -57,19 +57,19 @@ namespace IPK::AaaS {
                     } else {
                         this->input.unget();
                         current_state = E_LEXER_STATE_START;
-                        return new LexicalToken(token_string, LEXICAL_TOKEN_TYPE::NUMBER);
+                        return new LexicalToken(token_string, TOKEN_TYPE::NUMBER);
                     }
                     break;
             }
         }
     }
 
-    LexicalToken::LexicalToken(std::string value, LEXICAL_TOKEN_TYPE type)
+    LexicalToken::LexicalToken(std::string value, TOKEN_TYPE type)
         : value(std::move(value)), type(type) {}
 
     LexicalToken::~LexicalToken() { this->value.clear(); }
 
     std::string LexicalToken::get_value() { return this->value; }
 
-    LEXICAL_TOKEN_TYPE AaaS::LexicalToken::get_type() { return this->type; }
+    TOKEN_TYPE AaaS::LexicalToken::get_type() { return this->type; }
 }// namespace IPK

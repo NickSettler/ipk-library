@@ -15,23 +15,23 @@ int main() {
     IPK::AaaS::SyntaxTree *tree = parser->parse();
 
     std::function<void(IPK::AaaS::SyntaxTree *)> callback = [](IPK::AaaS::SyntaxTree *node) {
-        if (node->get_type() & (IPK::AaaS::LEXICAL_TOKEN_TYPE::PLUS | IPK::AaaS::LEXICAL_TOKEN_TYPE::MINUS |
-                                IPK::AaaS::LEXICAL_TOKEN_TYPE::MULTIPLY | IPK::AaaS::LEXICAL_TOKEN_TYPE::DIVIDE)) {
+        if (node->get_type() & (IPK::AaaS::TOKEN_TYPE::PLUS | IPK::AaaS::TOKEN_TYPE::MINUS |
+                                IPK::AaaS::TOKEN_TYPE::MULTIPLY | IPK::AaaS::TOKEN_TYPE::DIVIDE)) {
             int left_number = std::stoi(node->get_left()->get_value());
             int right_number = std::stoi(node->get_right()->get_value());
 
             int result = 0;
             switch (node->get_type()) {
-                case IPK::AaaS::LEXICAL_TOKEN_TYPE::PLUS:
+                case IPK::AaaS::TOKEN_TYPE::PLUS:
                     result = left_number + right_number;
                     break;
-                case IPK::AaaS::LEXICAL_TOKEN_TYPE::MINUS:
+                case IPK::AaaS::TOKEN_TYPE::MINUS:
                     result = left_number - right_number;
                     break;
-                case IPK::AaaS::LEXICAL_TOKEN_TYPE::MULTIPLY:
+                case IPK::AaaS::TOKEN_TYPE::MULTIPLY:
                     result = left_number * right_number;
                     break;
-                case IPK::AaaS::LEXICAL_TOKEN_TYPE::DIVIDE:
+                case IPK::AaaS::TOKEN_TYPE::DIVIDE:
                     result = left_number / right_number;
                     break;
                 default:
@@ -39,7 +39,7 @@ int main() {
             }
 
             node->set_value(std::to_string(result));
-            node->set_type(IPK::AaaS::LEXICAL_TOKEN_TYPE::NUMBER);
+            node->set_type(IPK::AaaS::TOKEN_TYPE::NUMBER);
         }
     };
 

@@ -33,7 +33,7 @@ namespace IPK::tests {
                 AaaS::Lexer lexer(input_stream);
                 auto *token = lexer.next_token();
 
-                while (token != nullptr && token->get_type() != AaaS::LEXICAL_TOKEN_TYPE::END_OF_FILE) {
+                while (token != nullptr && token->get_type() != AaaS::TOKEN_TYPE::END_OF_FILE) {
                     actual_tokens.push_back(*token);
                     token = lexer.next_token();
                 }
@@ -63,39 +63,39 @@ namespace IPK::tests {
         }
 
         TEST_F(LexerTests, Brackets) {
-            ProcessInput("((", {AaaS::LexicalToken("(", AaaS::LEXICAL_TOKEN_TYPE::LEFT_PARENTHESIS),
-                                AaaS::LexicalToken("(", AaaS::LEXICAL_TOKEN_TYPE::LEFT_PARENTHESIS)});
+            ProcessInput("((", {AaaS::LexicalToken("(", AaaS::TOKEN_TYPE::LEFT_PARENTHESIS),
+                                AaaS::LexicalToken("(", AaaS::TOKEN_TYPE::LEFT_PARENTHESIS)});
 
-            ProcessInput("()", {AaaS::LexicalToken("(", AaaS::LEXICAL_TOKEN_TYPE::LEFT_PARENTHESIS),
-                                AaaS::LexicalToken(")", AaaS::LEXICAL_TOKEN_TYPE::RIGHT_PARENTHESIS)});
+            ProcessInput("()", {AaaS::LexicalToken("(", AaaS::TOKEN_TYPE::LEFT_PARENTHESIS),
+                                AaaS::LexicalToken(")", AaaS::TOKEN_TYPE::RIGHT_PARENTHESIS)});
 
-            ProcessInput(")(", {AaaS::LexicalToken(")", AaaS::LEXICAL_TOKEN_TYPE::RIGHT_PARENTHESIS),
-                                AaaS::LexicalToken("(", AaaS::LEXICAL_TOKEN_TYPE::LEFT_PARENTHESIS)});
+            ProcessInput(")(", {AaaS::LexicalToken(")", AaaS::TOKEN_TYPE::RIGHT_PARENTHESIS),
+                                AaaS::LexicalToken("(", AaaS::TOKEN_TYPE::LEFT_PARENTHESIS)});
 
-            ProcessInput("))", {AaaS::LexicalToken(")", AaaS::LEXICAL_TOKEN_TYPE::RIGHT_PARENTHESIS),
-                                AaaS::LexicalToken(")", AaaS::LEXICAL_TOKEN_TYPE::RIGHT_PARENTHESIS)});
+            ProcessInput("))", {AaaS::LexicalToken(")", AaaS::TOKEN_TYPE::RIGHT_PARENTHESIS),
+                                AaaS::LexicalToken(")", AaaS::TOKEN_TYPE::RIGHT_PARENTHESIS)});
         }
 
         TEST_F(LexerTests, Operators) {
-            ProcessInput("+-*/", {AaaS::LexicalToken("+", AaaS::LEXICAL_TOKEN_TYPE::PLUS),
-                                  AaaS::LexicalToken("-", AaaS::LEXICAL_TOKEN_TYPE::MINUS),
-                                  AaaS::LexicalToken("*", AaaS::LEXICAL_TOKEN_TYPE::MULTIPLY),
-                                  AaaS::LexicalToken("/", AaaS::LEXICAL_TOKEN_TYPE::DIVIDE)});
+            ProcessInput("+-*/", {AaaS::LexicalToken("+", AaaS::TOKEN_TYPE::PLUS),
+                                  AaaS::LexicalToken("-", AaaS::TOKEN_TYPE::MINUS),
+                                  AaaS::LexicalToken("*", AaaS::TOKEN_TYPE::MULTIPLY),
+                                  AaaS::LexicalToken("/", AaaS::TOKEN_TYPE::DIVIDE)});
         }
 
         TEST_F(LexerTests, Numbers) {
-            ProcessInput("123", {AaaS::LexicalToken("123", AaaS::LEXICAL_TOKEN_TYPE::NUMBER)});
+            ProcessInput("123", {AaaS::LexicalToken("123", AaaS::TOKEN_TYPE::NUMBER)});
 
-            ProcessInput("12 34", {AaaS::LexicalToken("12", AaaS::LEXICAL_TOKEN_TYPE::NUMBER),
-                                   AaaS::LexicalToken("34", AaaS::LEXICAL_TOKEN_TYPE::NUMBER)});
+            ProcessInput("12 34", {AaaS::LexicalToken("12", AaaS::TOKEN_TYPE::NUMBER),
+                                   AaaS::LexicalToken("34", AaaS::TOKEN_TYPE::NUMBER)});
         }
 
         TEST_F(LexerTests, Query) {
-            ProcessInput("(+ 10 20)", {AaaS::LexicalToken("(", AaaS::LEXICAL_TOKEN_TYPE::LEFT_PARENTHESIS),
-                                       AaaS::LexicalToken("+", AaaS::LEXICAL_TOKEN_TYPE::PLUS),
-                                       AaaS::LexicalToken("10", AaaS::LEXICAL_TOKEN_TYPE::NUMBER),
-                                       AaaS::LexicalToken("20", AaaS::LEXICAL_TOKEN_TYPE::NUMBER),
-                                       AaaS::LexicalToken(")", AaaS::LEXICAL_TOKEN_TYPE::RIGHT_PARENTHESIS)});
+            ProcessInput("(+ 10 20)", {AaaS::LexicalToken("(", AaaS::TOKEN_TYPE::LEFT_PARENTHESIS),
+                                       AaaS::LexicalToken("+", AaaS::TOKEN_TYPE::PLUS),
+                                       AaaS::LexicalToken("10", AaaS::TOKEN_TYPE::NUMBER),
+                                       AaaS::LexicalToken("20", AaaS::TOKEN_TYPE::NUMBER),
+                                       AaaS::LexicalToken(")", AaaS::TOKEN_TYPE::RIGHT_PARENTHESIS)});
         }
     }// namespace
 }// namespace IPK::tests

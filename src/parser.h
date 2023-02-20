@@ -10,7 +10,6 @@
 #include "lexer.h"
 
 namespace IPK::AaaS {
-
     typedef enum {
         PRE_ORDER,
         IN_ORDER,
@@ -19,15 +18,15 @@ namespace IPK::AaaS {
 
     class SyntaxTree {
     private:
-        LEXICAL_TOKEN_TYPE type;
+        TOKEN_TYPE type;
         std::string value;
 
         SyntaxTree *left;
         SyntaxTree *right;
 
     public:
-        SyntaxTree(LEXICAL_TOKEN_TYPE type, std::string value);
-        SyntaxTree(LEXICAL_TOKEN_TYPE type, std::string value, SyntaxTree *left, SyntaxTree *right);
+        SyntaxTree(TOKEN_TYPE type, std::string value);
+        SyntaxTree(TOKEN_TYPE type, std::string value, SyntaxTree *left, SyntaxTree *right);
 
         ~SyntaxTree();
 
@@ -37,9 +36,9 @@ namespace IPK::AaaS {
 
         std::string get_value();
 
-        void set_type(LEXICAL_TOKEN_TYPE type);
+        void set_type(TOKEN_TYPE type);
 
-        LEXICAL_TOKEN_TYPE get_type();
+        TOKEN_TYPE get_type();
 
         SyntaxTree *get_left();
 
@@ -52,7 +51,7 @@ namespace IPK::AaaS {
 
         std::function<LexicalToken *()> &lexer_func;
 
-        void expect_token(LEXICAL_TOKEN_TYPE type);
+        void expect_token(TOKEN_TYPE type);
 
         SyntaxTree *expr();
 

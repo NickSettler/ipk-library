@@ -16,16 +16,16 @@ namespace IPK::AaaS {
     class LexicalToken {
     private:
         std::string value;
-        LEXICAL_TOKEN_TYPE type;
+        TOKEN_TYPE type;
 
     public:
-        LexicalToken(std::string value, LEXICAL_TOKEN_TYPE type);
+        LexicalToken(std::string value, TOKEN_TYPE type);
 
         ~LexicalToken();
 
         std::string get_value();
 
-        LEXICAL_TOKEN_TYPE get_type();
+        TOKEN_TYPE get_type();
     };
 
     class Lexer {
