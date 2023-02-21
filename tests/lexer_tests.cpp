@@ -1,4 +1,5 @@
 /**
+ * IPK Lexer tests
  *
  * @file: lexer_tests.cpp
  * @date: 20.02.2023
@@ -39,6 +40,7 @@ namespace IPK::tests {
                 }
 
                 EXPECT_EQ(actual_tokens.size(), expected_tokens.size()) << "Input: " << input;
+                
                 for (auto expected_token: expected_tokens) {
                     auto actual_token = actual_tokens.front();
 
