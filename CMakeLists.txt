@@ -18,7 +18,7 @@ enable_testing()
 add_executable(
         tests
         tests/main.cpp
-        tests/lexer_tests.cpp)
+        tests/lexer_tests.cpp tests/syntax_tests.cpp)
 
 target_link_libraries(
         tests
