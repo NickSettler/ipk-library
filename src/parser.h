@@ -9,6 +9,7 @@
 #define IPKLIB_PARSER_H
 
 #include "lexer.h"
+#include "types.h"
 
 #include <sstream>
 
@@ -83,6 +84,8 @@ namespace IPK::AaaS {
         static bool is_valid_input(const std::string& input);
 
         static bool is_valid_input(std::istream &input);
+
+        static const char* token_type_to_string(TOKEN_TYPE type);
     };
 }// namespace IPK::AaaS
 

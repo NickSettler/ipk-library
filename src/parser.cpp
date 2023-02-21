@@ -1,11 +1,26 @@
-#include "parser.h"
-
 /**
  * IPK Input Parser
  *
  * @file: parser.cpp
  * @date: 20.02.2023
  */
+
+#include "parser.h"
+
+std::map<IPK::AaaS::TOKEN_TYPE, std::string> TOKEN_TYPE_MAP = {
+        {IPK::AaaS::TOKEN_TYPE::END_OF_FILE, "END_OF_FILE"},
+
+        {IPK::AaaS::TOKEN_TYPE::LEFT_PARENTHESIS, "LEFT_PARENTHESIS"},
+        {IPK::AaaS::TOKEN_TYPE::RIGHT_PARENTHESIS, "RIGHT_PARENTHESIS"},
+
+        {IPK::AaaS::TOKEN_TYPE::NUMBER, "NUMBER"},
+
+        {IPK::AaaS::TOKEN_TYPE::PLUS, "PLUS"},
+        {IPK::AaaS::TOKEN_TYPE::MINUS, "MINUS"},
+        {IPK::AaaS::TOKEN_TYPE::MULTIPLY, "MULTIPLY"},
+        {IPK::AaaS::TOKEN_TYPE::DIVIDE, "DIVIDE"},
+        {IPK::AaaS::TOKEN_TYPE::OPERATOR, "OPERATOR"},
+};
 
 IPK::AaaS::SyntaxException::SyntaxException(std::string message) { this->message = std::move(message); }
 
@@ -52,7 +67,11 @@ IPK::AaaS::Parser::Parser(std::function<LexicalToken *()> &lexer_func) : lexer_f
 IPK::AaaS::Parser::~Parser() { delete current_token; }
 
 void IPK::AaaS::Parser::expect_token(IPK::AaaS::TOKEN_TYPE type) {
-    if (current_token->get_type() != type) { throw SyntaxException("Unexpected token."); }
+    if (!(current_token->get_type() & type)) {
+        std::stringstream ss;
+        ss << "Unexpected token. Expected " << IPK::AaaS::ParserUtils::token_type_to_string(type);
+        throw SyntaxException(ss.str());
+    }
 
     current_token = lexer_func();
 }
@@ -121,4 +140,10 @@ bool IPK::AaaS::ParserUtils::is_valid_input(std::istream &input) {
     delete lexer;
     delete parser;
     return true;
+}
+
+const char *IPK::AaaS::ParserUtils::token_type_to_string(IPK::AaaS::TOKEN_TYPE type) {
+    if (!TOKEN_TYPE_MAP.contains(type)) throw IPK::AaaS::SyntaxException("Unknown token type");
+
+    return TOKEN_TYPE_MAP.at(type).c_str();
 }
