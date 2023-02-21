@@ -20,7 +20,13 @@ namespace IPK::AaaS {
         MINUS = 1 << 5,
         MULTIPLY = 1 << 6,
         DIVIDE = 1 << 7,
+
+        OPERATOR = PLUS | MINUS | MULTIPLY | DIVIDE,
     } TOKEN_TYPE;
+
+    inline TOKEN_TYPE operator|(TOKEN_TYPE a, TOKEN_TYPE b) {
+        return static_cast<TOKEN_TYPE>(static_cast<int>(a) | static_cast<int>(b));
+    }
 }// namespace IPK::AaaS
 
 #endif// IPKLIB_TYPES_H
