@@ -110,7 +110,13 @@ IPK::AaaS::SyntaxTree *IPK::AaaS::Parser::expr() {
 
 IPK::AaaS::SyntaxTree *IPK::AaaS::Parser::build_tree() {
     SyntaxTree *tree = nullptr;
-    while (current_token->get_type() != TOKEN_TYPE::END_OF_FILE) tree = expr();
+
+    if (current_token->get_type() == TOKEN_TYPE::END_OF_FILE) { return tree; }
+
+    if (current_token->get_type() != TOKEN_TYPE::LEFT_PARENTHESIS)
+        throw SyntaxException("Unexpected token. Expected (");
+
+    while (current_token->get_type() != TOKEN_TYPE::END_OF_FILE) { tree = expr(); }
 
     return tree;
 }
