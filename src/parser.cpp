@@ -41,6 +41,8 @@ IPK::AaaS::SyntaxTree::~SyntaxTree() {
 }
 
 void IPK::AaaS::SyntaxTree::traverse(std::function<void(SyntaxTree *)> &callback, IPK::AaaS::TreeTraversalType type) {
+    if (this == nullptr) return;
+
     if (type == TreeTraversalType::PRE_ORDER) callback(this);
     if (left != nullptr) left->traverse(callback, type);
     if (type == TreeTraversalType::IN_ORDER) callback(this);
